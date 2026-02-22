@@ -1,14 +1,26 @@
 ---
+import { PhXLogo } from "phosphor-icons-astro";
+
 const year = new Date().getFullYear();
 ---
 
-<footer class="footer">
-  <p>&copy; {year} UINUX. All rights reserved.</p>
+<footer
+  class="footer"
+  style="display:flex;align-items:center;justify-content: space-between;"
+>
+  <p>
+    Copyleft {year} - All rights reversed. The internet is free and so is my content.
+  </p>
+
+  <a href="https://x.com/odevjoao" target="_blank">
+    <span>
+      <PhXLogo size={24} />
+    </span>
+  </a>
 </footer>
 
 <style>
   .footer {
-    margin-top: var(--space-2xl);
     padding: var(--space-lg) 0;
     border-top: 1px solid var(--color-border);
   }

@@ -1,13 +1,45 @@
 ---
 const currentPath = Astro.url.pathname;
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { PhRss } from "phosphor-icons-astro";
+import Logo from "../assets/images/logo.png";
+import LanguageSelector from "./LanguageSelector.astro";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <nav class="nav">
-  <a href="/" class="nav-brand">UINUX Blog</a>
-  <div class="nav-links">
-    <a href="/search" class:list={[{ active: currentPath === "/search" || currentPath === "/search/" }]}>Search</a>
-    <a href="/about" class:list={[{ active: currentPath === "/about" || currentPath === "/about/" }]}>About</a>
-    <a href="/rss.xml">RSS</a>
+  <a href={`/${lang}`} class="nav-brand">
+    <img src={Logo.src} alt="@odevjoao" class="nav-logo" />
+  </a>
+  <div style="display:flex;align-items:center;gap:1rem">
+    <div class="nav-links">
+      <a
+        href={`/${lang}/about`}
+        class={currentPath === "/about" || currentPath === "/about/"
+          ? "active"
+          : ""}
+      >
+        <span data-i18n="about">{t("nav.about")}</span>
+      </a>
+      <a
+        href={`/${lang}/search`}
+        class={currentPath === "/search" || currentPath === "/search/"
+          ? "active"
+          : ""}
+      >
+        <span data-i18n="search">{t("nav.search")}</span>
+      </a>
+
+      <LanguageSelector />
+
+      <a href="/rss.xml" style="padding-top: 4px;">
+        <span>
+          <PhRss size={24} />
+        </span>
+      </a>
+    </div>
   </div>
 </nav>
 
@@ -15,23 +47,17 @@ const currentPath = Astro.url.pathname;
   .nav {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    padding: var(--space-lg) 0;
-    border-bottom: 1px solid var(--color-border);
-    margin-bottom: var(--space-2xl);
+    align-items: center;
+    padding-top: var(--space-lg);
+    padding-bottom: 1.5rem;
   }
 
-  .nav-brand {
-    font-family: var(--font-heading);
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    text-decoration: none;
-    color: var(--color-text);
-  }
-
-  .nav-brand:hover {
-    color: var(--color-text-secondary);
+  .nav-logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 9999px;
+    object-fit: cover;
+    display: inline-block;
   }
 
   .nav-links {
@@ -41,7 +67,7 @@ const currentPath = Astro.url.pathname;
 
   .nav-links a {
     font-family: var(--font-heading);
-    font-size: 0.8125rem;
+    font-size: 1rem;
     color: var(--color-text-secondary);
     text-decoration: none;
   }

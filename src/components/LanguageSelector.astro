@@ -1,0 +1,59 @@
+---
+import { languages } from "../i18n/ui";
+import { getLangFromUrl } from "../i18n/utils";
+
+const selectedLang = getLangFromUrl(Astro.url);
+---
+
+<div class="lang-selector" role="group" aria-label="Language selection">
+  {
+    Object.entries(languages).map(([lang]) => {
+      const isActive = lang === selectedLang;
+      return (
+        <a class={`lang-btn${isActive ? " active" : ""}`} href={`/${lang}`}>
+          {lang}
+        </a>
+      );
+    })
+  }
+</div>
+
+<style>
+  .lang-selector {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .lang-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .lang-btn.active {
+    background: var(--color-text);
+    color: var(--color-bg);
+    border-color: transparent;
+  }
+
+  .lang-btn:focus-visible {
+    outline: 2px solid var(--color-text);
+    outline-offset: 2px;
+  }
+</style>

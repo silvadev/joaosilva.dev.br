@@ -1,4 +1,5 @@
 ---
+import { getLangFromUrl } from "../i18n/utils";
 import Heading from "./Heading.astro";
 import Prose from "./Prose.astro";
 
@@ -10,11 +11,16 @@ interface Props {
 
 const { title, date, description } = Astro.props;
 
-const formattedDate = date.toLocaleDateString("en-US", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
+const lang = getLangFromUrl(Astro.url);
+
+const formattedDate = date.toLocaleDateString(
+  lang === "pt" ? "pt-BR" : "en-US",
+  {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  },
+);
 ---
 
 <article class="article">
@@ -22,6 +28,9 @@ const formattedDate = date.toLocaleDateString("en-US", {
     <Heading as="h1">{title}</Heading>
     <p class="article-meta">
       <time datetime={date.toISOString()}>{formattedDate}</time>
+    </p>
+    <p class="article-meta">
+      {description}
     </p>
   </header>
   <Prose>

@@ -1,0 +1,89 @@
+---
+import Layout from "../../components/Layout.astro";
+import Heading from "../../components/Heading.astro";
+import Prose from "../../components/Prose.astro";
+---
+
+<Layout
+  title="Sobre mim — João Silva | @odevjoao"
+  description="Me conheça melhor."
+>
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      name: "Sobre mim — João Silva | @odevjoao",
+      description: "Me conheça melhor.",
+      url: new URL("/pt/about", Astro.site).href,
+      isPartOf: {
+        "@type": "WebSite",
+        name: "João Silva | @odevjoao",
+        url: Astro.site?.href,
+      },
+    })}
+  />
+  <section class="about">
+    <Heading as="h1">Sobre Mim</Heading>
+    <Prose>
+      <p>
+        Nasci em uma cidade considerada a Suíça Brasileira, no interior do Rio
+        de Janeiro, Brasil. Cercada por muito verde e lindas paisagens, Benito
+        di Paula se inpirou e escreveu a música <a
+          href="https://www.youtube.com/watch?v=BDyxUQaG73E"
+          target="_blank">"Homem da Montanha"</a
+        >. Além de ser apaixonado por games e grande fã de wrestling
+        profissional (WWE), programo em JavaScript e TypeScript.
+      </p>
+      <p>
+        Atualmente sou engenheiro de software na <a
+          href="https://ssparisi.software/"
+          target="_blank">SS Parisi</a
+        >. Atuando como desenvolvedor full-stack, ajudo na implementação e
+        manutenção de softwares do setor contábil que precisam ter alta
+        disponibilidade e processamento.
+      </p>
+      <p>
+        Recentemente, estou descobrindo um novo interesse na área civic tech
+        brasileira, com soluções que promovem engajamento, transparência e
+        impacto social, melhorando o relacionamento entre cidadãos e governo.
+        Com isso, criei uma comunidade no discord chamada de <a
+          href="https://discord.gg/DNMrfEep"
+          target="_blank">🇧🇷 Civic Tech Brasil 🇧🇷</a
+        > para ser um ponto de encontro entre devs que estão envolvidos nesse tipo
+        de projeto.
+      </p>
+      <p>
+        Como creator, criei esse blog para tratar de assuntos mais técnicos.
+        Além disso, criei uma newsletter semanal para ser algo mais informal,
+        contendo meus insights de estudos, resumos, dicas e projetos. Tudo isso,
+        com base na minha experiência profissional. O nome da minha newsletter é
+        <a href="https://devdamontanha.substack.com" target="_blank"
+          >"Dev da Montanha"</a
+        >, fazendo referência a música do Benito di Paula, abordada na
+        introdução.
+      </p>
+      <p>
+        Estou iniciando minha aventura como autor, e em breve pretendo publicar
+        livros e e-books.
+      </p>
+      <p>
+        A internet me deu tudo o que tenho hoje. Sendo um Gen Z, praticamente
+        nasci com acesso a internet. Tenho um grande privilégio de trabalhar
+        como programador e pretendo trabalhar por longos anos. Não me vejo sendo
+        substituído por Inteligência Artificial. Irei usá-la a meu favor para
+        ser ainda mais produtivo. Tenho a certeza de que quando trabalhamos com
+        aquilo que gostamos, tendo um propósito por trás, nunca perderemos a
+        motiviação de trabalhar. Meu propósito com a programação é ajudar
+        pessoas, solucionando seus problemas através de software bem planejado.
+      </p>
+    </Prose>
+  </section>
+</Layout>
+
+<style>
+  .about {
+    max-width: var(--width-content);
+  }
+</style>

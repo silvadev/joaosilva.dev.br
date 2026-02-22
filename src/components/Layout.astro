@@ -2,6 +2,8 @@
 import Nav from "./Nav.astro";
 import Footer from "./Footer.astro";
 import "../styles/global.css";
+import { getLangFromUrl } from "../i18n/utils";
+import Logo from "../assets/images/logo.png";
 
 interface Props {
   title: string;
@@ -12,35 +14,48 @@ interface Props {
 
 const {
   title,
-  description = "A quiet place to read.",
+  description = "Learning and building cool things out there.",
   ogType = "website",
   ogImage,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const lang = getLangFromUrl(Astro.url);
+const currentPath = Astro.url.pathname;
+const isRootPath = currentPath === "/" || currentPath === "";
+const shouldRedirectToPt = isRootPath;
 const googleVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {googleVerification && <meta name="google-site-verification" content={googleVerification} />}
+    {shouldRedirectToPt && <meta http-equiv="refresh" content="0;url=/pt/" />}
+    {
+      googleVerification && (
+        <meta name="google-site-verification" content={googleVerification} />
+      )
+    }
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL.href} />
+    <link rel="icon" type="image/png" href={Logo.src} />
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL.href} />
-    <meta property="og:site_name" content="UINUX Blog" />
+    <meta property="og:site_name" content="João Silva | Blog" />
     {ogImage && <meta property="og:image" content={ogImage} />}
 
     <!-- Twitter -->
-    <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+    <meta
+      name="twitter:card"
+      content={ogImage ? "summary_large_image" : "summary"}
+    />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     {ogImage && <meta name="twitter:image" content={ogImage} />}
@@ -48,7 +63,12 @@ const googleVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
     <!-- JSON-LD -->
     <slot name="head" />
 
-    <link rel="alternate" type="application/rss+xml" title="UINUX Blog" href="/rss.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="João Silva | Blog"
+      href="/rss.xml"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
