@@ -1,75 +1,262 @@
-/* ============================================
-   UINUX Blog — Global Styles
-   A calm, typography-first design system.
-   ============================================ */
+@import "tailwindcss";
+@import "@fontsource/fira-code/400.css";
+@import "@fontsource-variable/plus-jakarta-sans/wght.css";
+@import "@fontsource-variable/dm-sans/wght.css";
+@import "@fontsource-variable/dm-sans/wght-italic.css";
 
-:root {
-  --font-body: "Newsreader", Georgia, "Times New Roman", serif;
-  --font-heading:
-    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
-    sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", Consolas, monospace;
+/*
+  Plus Jakarta Sans is the display face (logo and headings).
+  DM Sans is the text face.
+  Fira Code stays as the mono face.
+*/
 
-  --color-text: #1a1a1a;
-  --color-text-secondary: #555;
-  --color-text-tertiary: #888;
-  --color-bg: #fafaf9;
-  --color-surface: #fff;
-  --color-border: #e5e5e3;
-  --color-link: #1a1a1a;
-  --color-link-hover: #555;
-  --color-code-bg: #f4f4f2;
+@theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-white: #fff;
+  --color-black: #000;
+  --color-yellow: oklch(0.975 0.149 108.9);
+  --color-pink: oklch(0.762 0.168 350.8);
+  --color-purple: oklch(0.678 0.181 288.2);
+  --color-red: oklch(0.777 0.132 32.1);
+  --color-orange: oklch(0.87 0.11 74.8);
+  --color-green: oklch(0.903 0.197 142.2);
+  --color-cyan: oklch(0.921 0.118 181.4);
+  --color-primary: oklch(0.961 0 0);
+  --color-secondary: oklch(0.684 0.024 250.3);
+  --color-background: oklch(0.132 0.01 297.6);
+  --color-hover: oklch(0.246 0.008 297.3);
+  --color-command: oklch(100% 0 none / 0.09);
 
-  --width-content: 1000px;
-  --width-page: 1000px;
-
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 2rem;
-  --space-xl: 3rem;
-  --space-2xl: 5rem;
+  --font-sans: "DM Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans Variable", "DM Sans Variable", ui-sans-serif, sans-serif;
+  --font-mono: "Fira Code", ui-monospace, monospace;
 }
 
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@keyframes overlay-show {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-html {
-  font-size: 18px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+@keyframes overlay-hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
-body {
-  font-family: var(--font-body);
-  color: var(--color-text);
-  background-color: var(--color-bg);
-  line-height: 1.7;
+@keyframes content-show {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
-a {
-  color: var(--color-link);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
-  transition: color 0.15s ease;
+@keyframes content-hide {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
 }
 
-a:hover {
-  color: var(--color-link-hover);
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
+@layer utilities {
+  .animate-overlay-show {
+    animation: overlay-show 0.2s ease-out;
+  }
+
+  .animate-overlay-hide {
+    animation: overlay-hide 0.2s ease-out;
+  }
+
+  .animate-content-show {
+    animation: content-show 0.2s ease-out;
+  }
+
+  .animate-content-hide {
+    animation: content-hide 0.2s ease-out;
+  }
+
+  .animate-toast-in {
+    animation: toast-in 0.15s ease-out;
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background-color: var(--color-background);
+    @apply font-sans text-secondary antialiased;
+  }
+
+  body {
+    min-height: 100vh;
+    overflow-x: clip;
+    background-color: var(--color-background);
+  }
+
+  kbd {
+    font-family: var(--font-mono);
+    @apply rounded bg-secondary px-1.25 py-0.25 text-sm text-background transition-colors;
+  }
+
+  h1 {
+    @apply mb-5 font-display text-[3rem] leading-13 font-extrabold text-primary;
+  }
+
+  h2 {
+    @apply mt-15 text-2xl font-bold text-primary;
+  }
+
+  h3,
+  h3 a {
+    @apply mt-5 text-lg font-bold text-primary;
+  }
+
+  p {
+    @apply my-5 text-secondary;
+  }
+
+  strong {
+    @apply font-medium text-primary;
+  }
+
+  ul,
+  ol {
+    @apply m-0 list-disc pl-10;
+  }
+
+  blockquote {
+    @apply m-0 border-l-4 border-hover pl-5 font-normal text-secondary italic;
+  }
+
+  a {
+    border-bottom: 0.03125rem solid var(--color-secondary);
+    @apply text-primary no-underline transition-opacity;
+  }
+
+  a:hover,
+  a:focus {
+    @apply opacity-80;
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
 }
 
 ::selection {
-  background-color: #d4d4d0;
+  background: #80ffea;
+  color: #000;
+  -webkit-text-fill-color: #000;
+}
+
+[data-accent="yellow"] ::selection {
+  background: #ffff80;
+}
+
+[data-accent="pink"] ::selection {
+  background: #ff80bf;
+}
+
+[data-accent="purple"] ::selection {
+  background: #9580ff;
+}
+
+[data-accent="red"] ::selection {
+  background: #ff9580;
+}
+
+[data-accent="orange"] ::selection {
+  background: #ffca80;
+}
+
+[data-accent="green"] ::selection {
+  background: #8aff80;
+}
+
+[data-accent="cyan"] ::selection {
+  background: #80ffea;
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose :is(h2, h3, h4) {
+  scroll-margin-top: 2rem;
+}
+
+.prose :not(pre) > code {
+  border-radius: 0.5rem;
+  background: oklch(10% 0.01 280);
+  padding: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.9375rem;
+  color: var(--color-primary);
+}
+
+.prose pre {
+  margin-block: 1.25rem;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+}
+
+.prose pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.875rem;
+}
+
+.prose img {
+  margin-block: 1.25rem;
+  max-width: 100%;
+  min-width: 100%;
+  border-radius: 0.5rem;
+}
+
+.command-menu [cmdk-group-heading] {
+  background: transparent;
+  padding: 0.5rem 1rem;
+  font-size: 0.625rem;
+  letter-spacing: 0.0625rem;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+}
+
+.command-menu [cmdk-item] {
+  cursor: pointer;
+  color: var(--color-secondary);
+}
+
+.command-menu [cmdk-item][data-selected="true"],
+.command-menu [cmdk-item][aria-selected="true"] {
+  background: rgb(255 255 255 / 0.1);
+  color: var(--color-primary);
 }

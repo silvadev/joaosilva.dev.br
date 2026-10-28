@@ -1,0 +1,68 @@
+---
+import Layout from "../../components/Layout.astro";
+import { ShortcutHome } from "../../components/react/ShortcutHome";
+import { useTranslations } from "../../i18n/utils";
+import { getLocalePaths } from "../../lib/posts";
+
+export function getStaticPaths() {
+  return getLocalePaths();
+}
+
+const lang = Astro.params.lang === "en" ? "en" : "pt";
+const t = useTranslations(lang);
+---
+
+<Layout
+  title="João Silva"
+  description={t("home.tagline")}
+  variant="home"
+  primary="cyan"
+>
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "João Silva",
+      description: t("home.tagline"),
+      url: new URL(`/${lang}/`, Astro.site).href,
+      inLanguage: lang === "pt" ? "pt-BR" : "en",
+      author: {
+        "@type": "Person",
+        name: "João Silva",
+        url: Astro.site?.href,
+        sameAs: [
+          "https://www.linkedin.com/in/joaosilvadev/",
+          "https://github.com/silvadev",
+          "https://x.com/joaosilvadev",
+          "https://www.instagram.com/joaosilva.dev",
+          "https://devdamontanha.substack.com",
+        ],
+      },
+    })}
+  />
+  <h1>João Silva</h1>
+  <p class="mt-0">
+    <strong>
+      {t("home.roleBefore")}{" "}
+      <a
+        href="https://ssparisi.software/"
+        target="_blank"
+        rel="noopener noreferrer">SS Parisi</a
+      >
+    </strong>
+    <br />
+    {t("home.tagline")}
+  </p>
+  <ShortcutHome
+    client:load
+    press={t("home.shortcut.press")}
+    suffix={t("home.shortcut.suffix")}
+    mobile={t("home.shortcut.mobile")}
+    mac1={t("home.shortcut.mac1")}
+    mac2={t("home.shortcut.mac2")}
+    other1={t("home.shortcut.other1")}
+    other2={t("home.shortcut.other2")}
+  />
+</Layout>

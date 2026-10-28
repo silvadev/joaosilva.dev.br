@@ -1,0 +1,31 @@
+---
+import Layout from "../../components/Layout.astro";
+import { SearchPanel } from "../../components/react/SearchPanel";
+import { useTranslations } from "../../i18n/utils";
+import { getLocalePaths } from "../../lib/posts";
+
+export function getStaticPaths() {
+  return getLocalePaths();
+}
+
+const lang = Astro.params.lang === "en" ? "en" : "pt";
+const t = useTranslations(lang);
+const initialQuery = Astro.url.searchParams.get("q") ?? "";
+---
+
+<Layout
+  title={t("search.title")}
+  description={t("search.description")}
+  heading={t("search.heading")}
+  primary="orange"
+>
+  <SearchPanel
+    client:load
+    lang={lang}
+    initialQuery={initialQuery}
+    placeholder={t("search.placeholder")}
+    emptyLabel={t("search.empty")}
+    loadingLabel={t("search.loading")}
+    errorLabel={t("search.error")}
+  />
+</Layout>

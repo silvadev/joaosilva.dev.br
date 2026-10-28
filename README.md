@@ -35,7 +35,7 @@ npm install
 
 ### Start writing
 
-1. Create a new `.md` or `.mdx` file in `src/content/posts/`
+1. Create a new `.md` or `.mdx` file in `src/content/ideas/`
 2. Add frontmatter:
 
 ```md
@@ -91,7 +91,7 @@ src/
     Prose.astro        Markdown content styling
   content/
     config.ts          Content collection schema
-    posts/             Markdown files go here
+    ideas/             Markdown files go here
   pages/
     index.astro              Home (post list)
     search.astro             Search page (client-side)

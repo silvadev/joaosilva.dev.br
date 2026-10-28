@@ -1,0 +1,54 @@
+---
+import Layout from "../../components/Layout.astro";
+import { IdeasBrowser } from "../../components/react/IdeasBrowser";
+import { useTranslations } from "../../i18n/utils";
+import {
+  formatIdeaDay,
+  formatIsoDate,
+  getLocalePaths,
+  getPosts,
+  plainText,
+  postHref,
+} from "../../lib/posts";
+
+export function getStaticPaths() {
+  return getLocalePaths();
+}
+
+const lang = Astro.params.lang === "en" ? "en" : "pt";
+const t = useTranslations(lang);
+const posts = await getPosts(lang);
+const count = posts.length;
+const countLabel =
+  count === 1
+    ? t("articles.count.one")
+    : t("articles.count.many").replace("{n}", String(count));
+const ideas = posts.map((post) => ({
+  href: postHref(post),
+  title: post.data.title,
+  description: post.data.description,
+  kind: post.data.kind,
+  tags: post.data.tags,
+  text: plainText(post.body ?? ""),
+  dateLabel: formatIdeaDay(post.data.date, lang),
+  dateTime: formatIsoDate(post.data.date),
+  year: post.data.date.getUTCFullYear(),
+  featured: post.data.featured && post.data.kind === "essay",
+  kicker: post.data.kicker ?? "",
+}));
+---
+
+<Layout
+  title={t("articles.title")}
+  description={t("articles.description")}
+  primary="yellow"
+>
+  <header class="mb-8 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+    <div class="flex flex-wrap items-baseline gap-x-4">
+      <h1 class="mb-0">{t("articles.heading")}</h1>
+      <p class="m-0 text-lg italic">{t("articles.motto")}</p>
+    </div>
+    <p class="m-0 text-sm">{countLabel}</p>
+  </header>
+  <IdeasBrowser client:load lang={lang} ideas={ideas} />
+</Layout>

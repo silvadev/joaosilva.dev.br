@@ -1,0 +1,39 @@
+---
+import AboutCopy from "../../components/AboutCopy.astro";
+import Layout from "../../components/Layout.astro";
+import { useTranslations } from "../../i18n/utils";
+import { getLocalePaths } from "../../lib/posts";
+
+export function getStaticPaths() {
+  return getLocalePaths();
+}
+
+const lang = Astro.params.lang === "en" ? "en" : "pt";
+const t = useTranslations(lang);
+---
+
+<Layout
+  title={t("about.title")}
+  description={t("about.description")}
+  heading={t("about.heading")}
+  primary="pink"
+>
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      name: t("about.title"),
+      description: t("about.description"),
+      url: new URL(`/${lang}/about`, Astro.site).href,
+      inLanguage: lang === "pt" ? "pt-BR" : "en",
+      isPartOf: {
+        "@type": "WebSite",
+        name: "João Silva",
+        url: Astro.site?.href,
+      },
+    })}
+  />
+  <AboutCopy lang={lang} />
+</Layout>

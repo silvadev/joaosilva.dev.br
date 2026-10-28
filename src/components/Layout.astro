@@ -1,38 +1,50 @@
 ---
-import Nav from "./Nav.astro";
+import { ClientRouter } from "astro:transitions";
+import dmSansLatin from "@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2?url";
+import plusJakartaLatin from "@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url";
 import Footer from "./Footer.astro";
+import { CommandBar } from "./react/CommandBar";
+import { Navbar } from "./react/Navbar";
+import { getLangFromUrl, localePath } from "../i18n/utils";
+import { getCommandPosts } from "../lib/posts";
+import type { Accent } from "../lib/palette";
 import "../styles/global.css";
-import { getLangFromUrl } from "../i18n/utils";
-import Logo from "../assets/images/logo.png";
 
 interface Props {
   title: string;
   description?: string;
   ogType?: "website" | "article";
-  ogImage?: string;
+  variant?: "home" | "page" | "article";
+  heading?: string;
+  primary?: Accent;
 }
 
 const {
   title,
   description = "Learning and building cool things out there.",
   ogType = "website",
-  ogImage,
+  variant = "page",
+  heading,
+  primary = "cyan",
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const lang = getLangFromUrl(Astro.url);
-const currentPath = Astro.url.pathname;
-const isRootPath = currentPath === "/" || currentPath === "";
-const shouldRedirectToPt = isRootPath;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const posts = await getCommandPosts();
+const ptHref = new URL(localePath(Astro.url.pathname, "pt", posts), Astro.site);
+const enHref = new URL(localePath(Astro.url.pathname, "en", posts), Astro.site);
 const googleVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
+const htmlLang = lang === "en" ? "en" : "pt";
+const article = variant === "article";
+const pageWidth = article ? "max-w-288" : "max-w-200";
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={htmlLang} class="touch-manipulation overscroll-contain">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {shouldRedirectToPt && <meta http-equiv="refresh" content="0;url=/pt/" />}
+    <meta name="theme-color" content="#08070b" />
     {
       googleVerification && (
         <meta name="google-site-verification" content={googleVerification} />
@@ -41,63 +53,95 @@ const googleVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL.href} />
-    <link rel="icon" type="image/png" href={Logo.src} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" hreflang="pt" href={ptHref.href} />
+    <link rel="alternate" hreflang="en" href={enHref.href} />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={new URL("/pt/", Astro.site).href}
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="João Silva"
+      href="/rss.xml"
+    />
+    <link
+      rel="preload"
+      href={plusJakartaLatin}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href={dmSansLatin}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
 
-    <!-- Open Graph -->
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL.href} />
-    <meta property="og:site_name" content="João Silva | Blog" />
-    {ogImage && <meta property="og:image" content={ogImage} />}
-
-    <!-- Twitter -->
+    <meta property="og:site_name" content="João Silva" />
+    <meta property="og:locale" content={lang === "pt" ? "pt_BR" : "en_US"} />
     <meta
-      name="twitter:card"
-      content={ogImage ? "summary_large_image" : "summary"}
+      property="og:locale:alternate"
+      content={lang === "pt" ? "en_US" : "pt_BR"}
     />
+
+    <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    {ogImage && <meta name="twitter:image" content={ogImage} />}
 
-    <!-- JSON-LD -->
     <slot name="head" />
-
-    <link
-      rel="alternate"
-      type="application/rss+xml"
-      title="João Silva | Blog"
-      href="/rss.xml"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400&display=swap"
-      rel="stylesheet"
-    />
+    <ClientRouter />
   </head>
   <body>
-    <div class="page">
-      <Nav />
-      <main>
-        <slot />
-      </main>
+    <div class="relative z-0 flex min-h-screen flex-col">
+      <Navbar
+        client:load
+        transition:persist="site-nav"
+        initialPath={Astro.url.pathname}
+        posts={posts}
+      />
+      {
+        variant === "home" ? (
+          <main
+            data-accent={primary}
+            class="mx-auto flex w-full max-w-200 flex-1 items-start py-14 md:w-200 md:py-28"
+          >
+            <div class="mx-5 mt-40 mb-5 flex w-full max-w-190 flex-col items-start md:mt-64">
+              <slot />
+            </div>
+          </main>
+        ) : (
+          <main
+            data-accent={primary}
+            class:list={[
+              "mx-auto flex w-full flex-1 items-start pt-32 pb-14 md:py-28",
+              pageWidth,
+            ]}
+          >
+            <div class="w-full py-5 text-base leading-8.5">
+              <div class:list={["mx-auto px-5", pageWidth]}>
+                {heading && <h1>{heading}</h1>}
+                <slot />
+              </div>
+            </div>
+          </main>
+        )
+      }
       <Footer />
     </div>
+    <CommandBar
+      client:load
+      transition:persist="command-bar"
+      initialPath={Astro.url.pathname}
+      posts={posts}
+    />
   </body>
 </html>
-
-<style>
-  .page {
-    max-width: var(--width-page);
-    margin: 0 auto;
-    padding: 0 var(--space-lg);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  main {
-    flex: 1;
-  }
-</style>

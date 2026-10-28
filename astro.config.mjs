@@ -1,12 +1,17 @@
-import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
+import react from "@astrojs/react";
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
   site: "https://joaosilva.dev.br",
-  integrations: [mdx()],
+  integrations: [mdx(), react()],
+  vite: {
+    plugins: [tailwindcss()],
+  },
   markdown: {
     shikiConfig: {
-      theme: "github-light",
+      theme: "dracula",
     },
   },
 });

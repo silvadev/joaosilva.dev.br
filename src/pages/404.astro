@@ -1,0 +1,46 @@
+---
+import Layout from "../components/Layout.astro";
+import { ShortcutError } from "../components/react/ShortcutError";
+import { ui } from "../i18n/ui";
+
+const copy = {
+  pt: {
+    href: "/pt",
+    mobile: ui.pt["notFound.home.mobile"],
+    press: ui.pt["notFound.home.press"],
+    suffix: ui.pt["notFound.home.suffix"],
+  },
+  en: {
+    href: "/en",
+    mobile: ui.en["notFound.home.mobile"],
+    press: ui.en["notFound.home.press"],
+    suffix: ui.en["notFound.home.suffix"],
+  },
+};
+---
+
+<Layout
+  title={ui.pt["notFound.title"]}
+  description={ui.pt["notFound.description"]}
+  primary="red"
+>
+  <script is:inline slot="head">
+    document.documentElement.dataset.notFoundLang =
+      location.pathname === "/en" || location.pathname.startsWith("/en/")
+        ? "en"
+        : "pt";
+  </script>
+  <div class="text-center">
+    <h1 data-not-found="pt">{ui.pt["notFound.heading"]}</h1>
+    <h1 data-not-found="en">{ui.en["notFound.heading"]}</h1>
+    <ShortcutError client:load pt={copy.pt} en={copy.en} />
+    <p data-not-found="pt">{ui.pt["notFound.message"]}</p>
+    <p data-not-found="en">{ui.en["notFound.message"]}</p>
+  </div>
+  <style is:global>
+    html[data-not-found-lang="en"] [data-not-found="pt"],
+    html:not([data-not-found-lang="en"]) [data-not-found="en"] {
+      display: none;
+    }
+  </style>
+</Layout>

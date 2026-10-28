@@ -1,0 +1,169 @@
+---
+import type { Lang } from "../i18n/ui";
+import { formatTenure, type YearMonth } from "../lib/tenure";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const external = { target: "_blank", rel: "noopener noreferrer" };
+
+const benito =
+  lang === "pt"
+    ? "https://pt.wikipedia.org/wiki/Benito_di_Paula"
+    : "https://en.wikipedia.org/wiki/Benito_di_Paula";
+
+const friburgo =
+  lang === "pt"
+    ? "https://pt.wikipedia.org/wiki/Nova_Friburgo"
+    : "https://en.wikipedia.org/wiki/Nova_Friburgo";
+
+const mountain = "https://www.youtube.com/watch?v=BDyxUQaG73E";
+
+const now = new Date();
+const today: YearMonth = {
+  year: now.getFullYear(),
+  month: now.getMonth() + 1,
+};
+
+const roles = [
+  {
+    title: "Software Engineer",
+    company: "SS Parisi",
+    url: "https://www.ssparisi.software/",
+    location: lang === "pt" ? "Teresópolis, Brasil" : "Teresópolis, Brazil",
+    start: { year: 2024, month: 10 },
+    startLabel: lang === "pt" ? "Out 2024" : "Oct 2024",
+    end: null,
+    endLabel: lang === "pt" ? "Presente" : "Present",
+    present: true,
+  },
+  {
+    title: "Front-end Engineer",
+    company: "Wx3",
+    url: "https://www.wx3.com.br/",
+    location: lang === "pt" ? "Nova Friburgo, Brasil" : "Nova Friburgo, Brazil",
+    start: { year: 2021, month: 4 },
+    startLabel: lang === "pt" ? "Abr 2021" : "Apr 2021",
+    end: { year: 2024, month: 10 },
+    endLabel: lang === "pt" ? "Out 2024" : "Oct 2024",
+    present: false,
+  },
+].map((role) => ({
+  ...role,
+  duration: formatTenure(role.start, role.end ?? today, lang),
+}));
+---
+
+<div class="flex flex-col justify-between md:grid md:grid-cols-[21rem_48%] md:items-stretch">
+  <div class="mt-0 w-auto md:relative md:w-84">
+    <img
+      alt="João Silva"
+      src="/26118546.jpeg"
+      width="336"
+      height="336"
+      fetchpriority="high"
+      class="h-auto max-w-full min-w-full rounded-lg object-cover object-center md:absolute md:inset-0 md:h-full md:min-h-0 md:w-full md:min-w-0"
+    />
+  </div>
+  <div class="mt-0 w-auto md:w-full">
+    {
+      lang === "pt" ? (
+        <>
+          <p class="mt-4 md:my-3.75 md:-mt-1.5">
+            <strong>Olá, eu sou João Silva!</strong> Eu e{" "}
+            <a href={benito} {...external}>
+              Benito di Paula
+            </a>{" "}
+            (1941 - 2026) compartilhamos das mesmas raízes, ambos somos{" "}
+            <a href={mountain} {...external}>homens da montanha</a>, de
+            uma cidade considerada a Suíça Brasileira -{" "}
+            <a href={friburgo} {...external}>Nova Friburgo</a>.
+          </p>
+          <p class="md:my-3.75">
+            Trabalho com tecnologia desde 2014. Como engenheiro de software,
+            desde 2021. Meu objetivo principal é que através da tecnologia eu
+            consiga ajudar e proporcionar felicidade às pessoas de alguma forma.
+          </p>
+          <p class="md:my-3.75">
+            Adoro jogos. Jogos são arte. Além disso, gosto de música clássica
+            (já estudei violino). Quando não estou trabalhando, gosto de tomar
+            chá, assistir séries e ler.
+          </p>
+        </>
+      ) : (
+        <>
+          <p class="mt-4 md:my-3.75 md:-mt-1.5">
+            <strong>Hello, I'm João Silva!</strong>{" "}
+            <a href={benito} {...external}>
+              Benito di Paula
+            </a>{" "}
+            (1941 - 2026) and I share the same roots. We are both{" "}
+            <a href={mountain} {...external}>mountain men</a>, from a
+            city considered the Brazilian Switzerland —{" "}
+            <a href={friburgo} {...external}>Nova Friburgo</a>.
+          </p>
+          <p class="md:my-3.75">
+            I have worked with technology since 2014, and as a software engineer
+            since 2021. My main goal is to use technology to help people and
+            bring them some happiness.
+          </p>
+          <p class="md:my-3.75">
+            I love games. Games are art. I also enjoy classical music (I studied
+            violin). When I'm not working, I like drinking tea, watching series,
+            and reading.
+          </p>
+        </>
+      )
+    }
+  </div>
+</div>
+<h2>{lang === "pt" ? "Carreira" : "Career"}</h2>
+{
+  roles.map((role) => (
+    <div class="mb-10">
+      <h3>{role.title}</h3>
+      <p class="m-0">
+        <a href={role.url} {...external}>
+          {role.company}
+        </a>
+        <span> • {role.location}</span>
+      </p>
+      <p class="m-0">
+        <span>{role.startLabel}</span>
+        <span> – </span>
+        <span>{role.endLabel}</span>
+        <span> • </span>
+        <span
+          data-tenure-present={role.present ? "" : undefined}
+          data-start-year={role.present ? role.start.year : undefined}
+          data-start-month={role.present ? role.start.month : undefined}
+          data-lang={role.present ? lang : undefined}
+        >
+          {role.duration}
+        </span>
+      </p>
+    </div>
+  ))
+}
+<script>
+  import { formatTenure } from "../lib/tenure";
+
+  function updatePresentTenure() {
+    const now = new Date();
+    const today = { year: now.getFullYear(), month: now.getMonth() + 1 };
+
+    for (const node of document.querySelectorAll<HTMLElement>(
+      "[data-tenure-present]",
+    )) {
+      const year = Number(node.dataset.startYear);
+      const month = Number(node.dataset.startMonth);
+      const tenureLang = node.dataset.lang === "en" ? "en" : "pt";
+      node.textContent = formatTenure({ year, month }, today, tenureLang);
+    }
+  }
+
+  updatePresentTenure();
+  document.addEventListener("astro:page-load", updatePresentTenure);
+</script>
